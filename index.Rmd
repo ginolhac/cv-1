@@ -1,7 +1,9 @@
 ---
-title: "Nick Strayer's CV"
-author: Nick Strayer
+title: "Aurélien Ginolhac's CV"
+author: Aurélien Ginolhac
 date: "`r Sys.Date()`"
+bibliography: biblio.bib
+biblio-style: plainyr2_rev.bst
 output:
   pagedown::html_resume:
     css: ['css/styles.css', 'resume']
@@ -9,14 +11,15 @@ output:
     self_contained: true
 ---
 
-```{r, include=FALSE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  results='asis', 
+  results = 'asis', 
   echo = FALSE
 )
 
 library(glue)
 library(tidyverse)
+library(fontawesome)
 
 # Set this to true to have links turned into footnotes at the end of the document
 PDF_EXPORT <- FALSE
@@ -24,16 +27,25 @@ PDF_EXPORT <- FALSE
 # Holds all the links that were inserted for placement at the end
 links <- c()
 
-source('parsing_functions.R')
+source("parsing_functions.R")
 
 # Load csv with position info
-position_data <- read_csv('positions.csv')
+position_data <- read_csv("positions.csv")
 ```
 
 
 ```{r}
+read_file("citations.bib") %>% 
+    gsub("@(.+?),", "\n@\\1,\n", .) %>%
+    gsub("},", "},\n", .) %>% 
+  write_file("citations_corrected.bib")
+```
+
+
+
+```{r}
 # When in export mode the little dots are unaligned, so fix that. 
-if(PDF_EXPORT){
+if (PDF_EXPORT) {
   cat("
   <style>
   :root{
@@ -52,10 +64,10 @@ Aside
 
 ```{r}
 # When in export mode the little dots are unaligned, so fix that. 
-if(PDF_EXPORT){
-  cat("View this CV online with links at _nickstrayer.me/cv_")
+if (PDF_EXPORT) {
+  cat("View this CV online with links at _ginolhac/cv_")
 } else {
-  cat("[<i class='fas fa-download'></i> Download a PDF of this CV](https://github.com/nstrayer/cv/raw/master/strayer_cv.pdf)")
+  cat("[<i class='fas fa-download'></i> Download a PDF of this CV](https://github.com/ginolhac/cv-1/raw/master/ginolhac_cv.pdf)")
 }
 ```
 
@@ -63,40 +75,31 @@ Contact {#contact}
 --------------------------------------------------------------------------------
 
 
-- <i class="fa fa-envelope"></i> nick.strayer@gmail.com
-- <i class="fa fa-twitter"></i> NicholasStrayer
-- <i class="fa fa-github"></i> github.com/nstrayer
-- <i class="fa fa-link"></i> [nickstrayer.me](http://nickstrayer.me/)
-- <i class="fa fa-phone"></i> (734) 645-0110
+- <i class="fa fa-envelope"></i> ginolhac@gmail.com
+- <i class="fa fa-github"></i> github.com/ginolhac
+- <i class="fa fa-link"></i> [lsru bioinfo core](https://wwwen.uni.lu/research/fstc/life_sciences_research_unit/core_positions/bioinformatics)
+- <i class="fa fa-phone"></i> (352) 661-172104
 
 
 
 Skills {#skills}
 --------------------------------------------------------------------------------
 
+Proficient in
 
-Highly experienced in
+- `r fa("r-project", fill = "steelblue", height = "12px")`
+- `r fa("linux")` GNU/Linux environment
+- HPC with `slurm`
 
+Experienced with
 
-- R 
-- Python
-- Javascript
-
-Experience with
-
-
+- python
 - Bash
-- SQL
-- C++
-- AWK
+- GNU AWK
 
 
 Disclaimer {#disclaimer}
 --------------------------------------------------------------------------------
-
-Made with the R package [**pagedown**](https://github.com/rstudio/pagedown). 
-
-The source code is available at [github.com/nstrayer/cv](https://github.com/nstrayer/cv).
 
 Last updated on `r Sys.Date()`.
 
@@ -105,15 +108,12 @@ Last updated on `r Sys.Date()`.
 Main
 ================================================================================
 
-Nick Strayer {#title}
+Aurélien Ginolhac {#title}
 --------------------------------------------------------------------------------
 
 
 ```{r}
-intro_text <- "I have made [visualizations viewed by hundreds of thousands of people](https://www.nytimes.com/interactive/2016/08/26/us/college-student-migration.html), [sped up query times for 25 terabytes of data by an average of 4,800 times](https://livefreeordichotomize.com/2019/06/04/using_awk_and_r_to_parse_25tb/), and built [packages for R](https://github.com/nstrayer/shinysense) that let you [do magic](http://nickstrayer.me/dataDayTexas/).
-
-Currently searching for a data science position that allows me to build tools using visualization and machine learning to help people explore and understand their data. 
-"
+intro_text <- "Bioanalyst, Providing bioinformatic services to the [_Life Sciences Research Unit_](https://wwwen.uni.lu/research/fstc/life_sciences_research_unit)"
 
 cat(sanitize_links(intro_text))
 ```
@@ -138,11 +138,11 @@ print_section(position_data, 'research_positions')
 
 
 
-Industry Experience {data-icon=suitcase}
+Industry Experience {data-icon=industry}
 --------------------------------------------------------------------------------
 
 ::: aside
-I have worked in a variety of roles ranging from journalist to software engineer to data scientist. I like collaborative environments where I can learn from my peers. 
+
 :::
 
 ```{r}
@@ -150,79 +150,43 @@ print_section(position_data, 'industry_positions')
 ```
 
 <br>
-<br>
-<br>
+
 
 Teaching Experience {data-icon=chalkboard-teacher}
 --------------------------------------------------------------------------------
 
-::: aside
-I am passionate about education. I believe that no topic is too complex if the teacher is empathetic and willing to think about new methods of approaching task. 
-:::
 
 ```{r}
 print_section(position_data, 'teaching_positions')
 ```
 
 
-Selected Data Science Writing {data-icon=chart-line}
+
+Publications {data-icon=book}
 --------------------------------------------------------------------------------
 
-
 ::: aside
-I regularly blog about data science and visualization on my blog [LiveFreeOrDichotomize.](https://livefreeordichotomize.com/)
+
+### Summary
+
+- Total number of peer-reviewed publications: **27**
+    + **5** as leading author
+- Total number of citations: **1,194**
+- Average citation **49.75**
+- ORCID ID: [0000-0001-7665-9547](https://orcid.org/0000-0001-7665-9547)
+
+### H-index: **17**
+
 :::
 
 ```{r}
-print_section(position_data, 'data_science_writings')
-```
-
-
-
-Selected Press (About)  {data-icon=newspaper}
---------------------------------------------------------------------------------
-
-```{r}
-print_section(position_data, 'about_me_press')
-```
-
-
-
-Selected Press (By)  {data-icon=newspaper}
---------------------------------------------------------------------------------
-
-```{r}
-print_section(position_data, 'by_me_press')
+bibdf <- bib2df::bib2df("citations.bib")
+print_articles(bibdf)
 ```
 
 
 
 
-Selected Publications, Posters, and Talks {data-icon=book}
---------------------------------------------------------------------------------
 
-```{r}
-print_section(position_data, 'academic_articles')
-```
-
-
-
-```{r}
-if(PDF_EXPORT){
-  cat("
-  
-Links {data-icon=link}
---------------------------------------------------------------------------------
-
-<br>
-
-
-")
-  
-  walk2(links, 1:length(links), function(link, index){
-    print(glue('{index}. {link}'))
-  })
-}
-```
 
 

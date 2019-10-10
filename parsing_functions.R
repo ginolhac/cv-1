@@ -12,7 +12,7 @@ find_link <- regex("
 # Function that removes links from text and replaces them with superscripts that are 
 # referenced in an end-of-document list. 
 sanitize_links <- function(text){
-  if(PDF_EXPORT){
+  if (PDF_EXPORT) {
     str_extract_all(text, find_link) %>% 
       pluck(1) %>% 
       walk(function(link_from_text){
@@ -36,8 +36,8 @@ sanitize_links <- function(text){
 # in descending order so links for the same position are
 # right next to eachother in number. 
 strip_links_from_cols <- function(data, cols_to_strip){
-  for(i in 1:nrow(data)){
-    for(col in cols_to_strip){
+  for (i in seq_len(nrow(data))) {
+    for (col in cols_to_strip) {
       data[i, col] <- sanitize_links(data[i, col])
     }
   }
@@ -50,7 +50,7 @@ print_section <- function(position_data, section_id){
   position_data %>% 
     filter(section == section_id) %>% 
     arrange(desc(end)) %>% 
-    mutate(id = 1:n()) %>% 
+    mutate(id = row_number()) %>% 
     pivot_longer(
       starts_with('description'),
       names_to = 'description_num',
@@ -69,10 +69,10 @@ print_section <- function(position_data, section_id){
         end,
         glue('{end} - {start}')
       ),
-      description_bullets = map_chr(descriptions, ~paste('-', ., collapse = '\n')),
+      description_bullets = map_chr(descriptions, ~ paste('-', ., collapse = '\n')),
     ) %>% 
     strip_links_from_cols(c('title', 'description_bullets')) %>% 
-    mutate_all(~ifelse(is.na(.), 'N/A', .)) %>% 
+    mutate_all(~ ifelse(is.na(.), 'N/A', .)) %>% 
     glue_data(
       "### {title}",
       "\n\n",
@@ -87,3 +87,41 @@ print_section <- function(position_data, section_id){
     )
 }
 
+
+# For bib files.
+# using bib2df spaces are expected around '=' between keys and values
+# read_lines("biblio.bib") %>% str_replace("([a-z])=([\"\\{])", "\\1 = \\2") %>% write_lines("biblio_corrected.bib")
+# if needed
+
+print_articles <- function(bibdf, type = "ARTICLE", cv_author = "Ginolhac, A") {
+  bibdf %>% 
+    filter(CATEGORY == type) %>% 
+    arrange(desc(YEAR)) %>% 
+    # collapse authors 
+    mutate(# find location of cv author in the list
+      position = map_int(AUTHOR, ~ which(str_detect(.x, cv_author))),
+      # shorten author list when possible
+      #AUTHOR2  = case_when(
+      #  position > 10 ~ AUTHOR,
+      #  position >= 5 ~  AUTHOR[1:5],
+      #  TRUE ~ AUTHOR
+      #),
+      authors = map_chr(AUTHOR, ~ glue_collapse(.x, last = " and ")),
+      # highlight cv author in bold
+      authors = str_replace(authors, cv_author, glue("**{cv_author}**")),
+      # clean up titles from curly braces
+      clean_title = str_remove_all(TITLE, "[\\{\\}]")) %>% 
+    glue_data(
+      "### {clean_title}",
+      "\n\n",
+      "{authors}",
+      " _{JOURNAL}_ ", " **{VOLUME}**, {PAGES}",
+      "\n\n",
+      "N/A",
+      "\n\n",
+      "{YEAR}", 
+      "\n\n\n",
+    )
+}
+#bibdf <- bib2df::bib2df("citations.bib")
+print_articles(bib2df::bib2df("citations.bib"))
