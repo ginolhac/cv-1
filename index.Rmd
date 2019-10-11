@@ -58,7 +58,7 @@ Aside
 ================================================================================
 
 
-![logo](beta_dist.png){width=100%}
+![logo](cpg.png){width=50%}
 
 ```{r}
 # When in export mode the little dots are unaligned, so fix that. 
@@ -169,11 +169,11 @@ Publications {data-icon=book}
 
 - Total number of peer-reviewed publications: **27**
     + **5** as leading author
-- Total number of citations: **1,194**
-- Average citation **49.75**
+- Total number of citations: **1,732**
+- Average citation **54.13**
 - ORCID ID: [0000-0001-7665-9547](https://orcid.org/0000-0001-7665-9547)
 
-### H-index: **17**
+### H-index: **18**
 
 :::
 

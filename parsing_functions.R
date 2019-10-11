@@ -132,7 +132,9 @@ print_articles <- function(bibdf, type = "ARTICLE", cv_author = "Ginolhac, A") {
       # remove one list level
       AUTHOR  = map(AUTHOR, ~ .x[[1]]),
       # collapse vector, with and for last author if still present
-      authors = map(AUTHOR, ~ if_else(.x[length(.x)] == " _et al._ ", glue_collapse(.x), glue_collapse(.x, last = " and "))),
+      authors = map(AUTHOR, ~ if_else(.x[length(.x)] == " _et al._ ", 
+                                      glue_collapse(.x, sep = " "), 
+                                      glue_collapse(.x, sep = " ", last = " and "))),
       # highlight cv author in bold
       authors = str_replace(authors, cv_author, glue("**{cv_author}**")),
       # clean up titles from curly braces
@@ -140,7 +142,7 @@ print_articles <- function(bibdf, type = "ARTICLE", cv_author = "Ginolhac, A") {
       # strip consecutives years
       years = na_year(YEAR))  %>%
     glue_data(
-      "### {clean_title}",
+      "### [{clean_title}]({URL})",
       "\n\n",
       "{authors}",
       " _{JOURNAL}_ ", " **{VOLUME}**, {PAGES}",
