@@ -93,6 +93,15 @@ print_section <- function(position_data, section_id){
 # read_lines("biblio.bib") %>% str_replace("([a-z])=([\"\\{])", "\\1 = \\2") %>% write_lines("biblio_corrected.bib")
 # if needed
 
+subset_authors <- function(vec, pos) {
+  case_when(
+    # need to wrap the vector in a list for map
+    pos <= 10 & length(vec) >= 10 ~ list(c(vec[1:10], " _et al._ ")),
+    pos <= 5 & length(vec) >= 5 ~ list(c(vec[1:5], " _et al._ ")),
+    pos <= 3 & length(vec) >= 3 ~  list(c(vec[1:3], " _et al._ ")),
+    TRUE ~ list(vec))
+}
+
 print_articles <- function(bibdf, type = "ARTICLE", cv_author = "Ginolhac, A") {
   bibdf %>% 
     filter(CATEGORY == type) %>% 
@@ -101,16 +110,15 @@ print_articles <- function(bibdf, type = "ARTICLE", cv_author = "Ginolhac, A") {
     mutate(# find location of cv author in the list
       position = map_int(AUTHOR, ~ which(str_detect(.x, cv_author))),
       # shorten author list when possible
-      #AUTHOR2  = case_when(
-      #  position > 10 ~ AUTHOR,
-      #  position >= 5 ~  AUTHOR[1:5],
-      #  TRUE ~ AUTHOR
-      #),
-      authors = map_chr(AUTHOR, ~ glue_collapse(.x, last = " and ")),
+      AUTHOR  = map2(AUTHOR, position, ~ subset_authors(.x, .y)),
+      # remove one list level
+      AUTHOR  = map(AUTHOR, ~ .x[[1]]),
+      # collapse vector, with and for last author if still present
+      authors = map(AUTHOR, ~ if_else(.x[length(.x)] == " _et al._ ", glue_collapse(.x), glue_collapse(.x, last = " and "))),
       # highlight cv author in bold
       authors = str_replace(authors, cv_author, glue("**{cv_author}**")),
       # clean up titles from curly braces
-      clean_title = str_remove_all(TITLE, "[\\{\\}]")) %>% 
+      clean_title = str_remove_all(TITLE, "[\\{\\}]"))  %>%
     glue_data(
       "### {clean_title}",
       "\n\n",
@@ -123,5 +131,4 @@ print_articles <- function(bibdf, type = "ARTICLE", cv_author = "Ginolhac, A") {
       "\n\n\n",
     )
 }
-#bibdf <- bib2df::bib2df("citations.bib")
-print_articles(bib2df::bib2df("citations.bib"))
+

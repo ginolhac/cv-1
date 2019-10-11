@@ -2,8 +2,6 @@
 title: "Aurélien Ginolhac's CV"
 author: Aurélien Ginolhac
 date: "`r Sys.Date()`"
-bibliography: biblio.bib
-biblio-style: plainyr2_rev.bst
 output:
   pagedown::html_resume:
     css: ['css/styles.css', 'resume']
