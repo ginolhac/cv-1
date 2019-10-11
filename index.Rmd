@@ -31,16 +31,6 @@ source("parsing_functions.R")
 position_data <- read_csv("positions.csv")
 ```
 
-
-```{r}
-read_file("citations.bib") %>% 
-    gsub("@(.+?),", "\n@\\1,\n", .) %>%
-    gsub("},", "},\n", .) %>% 
-  write_file("citations_corrected.bib")
-```
-
-
-
 ```{r}
 # When in export mode the little dots are unaligned, so fix that. 
 if (PDF_EXPORT) {
@@ -153,6 +143,52 @@ print_section(position_data, 'industry_positions')
 Teaching Experience {data-icon=chalkboard-teacher}
 --------------------------------------------------------------------------------
 
+::: aside
+
+### Summary
+
+- Total number of peer-reviewed publications: **29**
+    + **5** as leading author
+- Total number of citations: **1,692**
+- Average citation **60.43**
+- ORCID ID: [0000-0001-7665-9547](https://orcid.org/0000-0001-7665-9547)
+
+#### H-index: **18**
+
+
+```{r, fig.height=4, fig.width=2, echo = FALSE}
+#citation report from ISI Web of Knowledge 2019-10-11
+tribble(~ year,  ~ citations,
+        2019,    216,
+        2018,    304,
+        2017,    332,
+        2016,    243,
+        2015,    220,
+        2014,    134,
+        2013,     71,
+        2012,     45
+        ) %>% 
+  ggplot(aes(x = year, y = citations)) +
+  geom_col(fill = "goldenrod1") +
+  geom_text(aes(label = citations), hjust = 1.1, size = 5) +
+  scale_x_continuous(breaks = 2012:2019) +
+  scale_y_continuous(expand = c(0, 0), position = "bottom") +
+  coord_flip() +
+  theme_classic(14) +
+  theme(axis.line.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        plot.background = element_blank(),
+        panel.grid.major.x = element_line(linetype = "dashed", colour = "grey60")) +
+  ggimage::theme_transparent() +
+  labs(x = NULL,
+       y = "citations",
+       caption = "data from ISI Web of Knowledge") -> citation_plot
+ggsave(citation_plot, file = "citation.png", width = 3, height = 7, bg = "transparent")
+```
+
+![citations](citation.png)
+
+:::
 
 ```{r}
 print_section(position_data, 'teaching_positions')
@@ -163,19 +199,6 @@ print_section(position_data, 'teaching_positions')
 Publications {data-icon=book}
 --------------------------------------------------------------------------------
 
-::: aside
-
-### Summary
-
-- Total number of peer-reviewed publications: **27**
-    + **5** as leading author
-- Total number of citations: **1,732**
-- Average citation **54.13**
-- ORCID ID: [0000-0001-7665-9547](https://orcid.org/0000-0001-7665-9547)
-
-### H-index: **18**
-
-:::
 
 ```{r}
 bibdf <- bib2df::bib2df("citations.bib")

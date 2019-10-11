@@ -4,6 +4,7 @@
 
 - asked for _mathjax_ support in `html_resume` in [#146](https://github.com/rstudio/pagedown/issues/146)
 - article titles are links to the `url` key in the `.bib` file
+- citations graph transparent from [Guangchuang Yu](https://github.com/GuangchuangYu/cv)
 
 ### 2019-10-10
 
