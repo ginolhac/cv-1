@@ -179,12 +179,16 @@ Publications {data-icon=book}
 
 ```{r}
 bibdf <- bib2df::bib2df("citations.bib")
-print_articles(bibdf)
+print_articles(bibdf, type = "ARTICLE", cv_author = "Ginolhac, A")
 ```
 
+Patents {data-icon=atlas}
+--------------------------------------------------------------------------------
 
 
-
+```{r}
+print_articles(bibdf, type = "PATENT", cv_author = "Ginolhac, A")
+```
 
 
 

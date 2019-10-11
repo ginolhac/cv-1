@@ -93,6 +93,7 @@ print_section <- function(position_data, section_id){
 # read_lines("biblio.bib") %>% str_replace("([a-z])=([\"\\{])", "\\1 = \\2") %>% write_lines("biblio_corrected.bib")
 # if needed
 
+# helper functions
 subset_authors <- function(vec, pos) {
   case_when(
     # need to wrap the vector in a list for map
@@ -100,6 +101,23 @@ subset_authors <- function(vec, pos) {
     pos <= 5 & length(vec) >= 5 ~ list(c(vec[1:5], " _et al._ ")),
     pos <= 3 & length(vec) >= 3 ~  list(c(vec[1:3], " _et al._ ")),
     TRUE ~ list(vec))
+}
+# strip consecutive years
+na_year <- function(vec) {
+  stopifnot(length(vec) > 1)
+  buff <- vec[1]
+  res <- vector(mode = "character", length = length(buff))
+  res[1] <- buff
+  for (i in 2:length(vec)) {
+    #print(paste("comparing", , ""))
+    if (vec[i] == buff) {
+      res[i] <- "N/A"
+    } else {
+      res[i] <- as.character(vec[i])
+      buff <- vec[i]
+    }
+  }
+  res
 }
 
 print_articles <- function(bibdf, type = "ARTICLE", cv_author = "Ginolhac, A") {
@@ -118,7 +136,9 @@ print_articles <- function(bibdf, type = "ARTICLE", cv_author = "Ginolhac, A") {
       # highlight cv author in bold
       authors = str_replace(authors, cv_author, glue("**{cv_author}**")),
       # clean up titles from curly braces
-      clean_title = str_remove_all(TITLE, "[\\{\\}]"))  %>%
+      clean_title = str_remove_all(TITLE, "[\\{\\}]"),
+      # strip consecutives years
+      years = na_year(YEAR))  %>%
     glue_data(
       "### {clean_title}",
       "\n\n",
@@ -127,7 +147,7 @@ print_articles <- function(bibdf, type = "ARTICLE", cv_author = "Ginolhac, A") {
       "\n\n",
       "N/A",
       "\n\n",
-      "{YEAR}", 
+      "{years}", 
       "\n\n\n",
     )
 }
