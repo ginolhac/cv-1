@@ -46,7 +46,7 @@ strip_links_from_cols <- function(data, cols_to_strip){
 
 # Take a position dataframe and the section id desired
 # and prints the section to markdown. 
-print_section <- function(position_data, section_id){
+print_section <- function(position_data, section_id, n_max = Inf){
   position_data %>% 
     filter(section == section_id) %>% 
     arrange(desc(end)) %>% 
@@ -57,6 +57,7 @@ print_section <- function(position_data, section_id){
       values_to = 'description',
       values_drop_na = TRUE
     ) %>% 
+    slice_head(n = n_max) %>%
     group_by(id) %>% 
     mutate(
       descriptions = list(description)

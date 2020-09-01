@@ -1,4 +1,7 @@
 
+### 2020-09-01
+
+- added `n_max` to the section printing to select only recent items
 
 ### 2019-10-11
 

@@ -51,14 +51,6 @@ Aside
 
 ![logo](cpg.png){width=50%}
 
-```{r}
-# When in export mode the little dots are unaligned, so fix that. 
-if (PDF_EXPORT) {
-  cat("View this CV online with links at _ginolhac/cv_")
-} else {
-  cat("[<i class='fas fa-download'></i> Download a PDF of this CV](https://github.com/ginolhac/cv-1/raw/master/ginolhac_cv.pdf)")
-}
-```
 
 Contact {#contact}
 --------------------------------------------------------------------------------
@@ -67,7 +59,6 @@ Contact {#contact}
 - <i class="fa fa-envelope"></i> aurelien.ginolhac@uni.lu
 - <i class="fa fa-github"></i> github.com/ginolhac
 - <i class="fa fa-link"></i> [bioinfo core](https://wwwen.uni.lu/research/fstm/dlsm/core_positions/bioinformatics)
-- <i class="fa fa-phone"></i> (352) 661-172104
 
 
 
@@ -113,7 +104,7 @@ Education {data-icon=graduation-cap data-concise=true}
 --------------------------------------------------------------------------------
 
 ```{r}
-print_section(position_data, 'education')
+print_section(position_data, 'education', n_max = 1)
 ```
 
 
@@ -122,7 +113,7 @@ Research Experience {data-icon=laptop}
 --------------------------------------------------------------------------------
 
 ```{r}
-print_section(position_data, 'research_positions')
+print_section(position_data, 'research_positions', n_max = 2)
 ```
 
 Expert Hcères Jan 2020
@@ -135,7 +126,7 @@ Industry Experience {data-icon=industry}
 :::
 
 ```{r}
-print_section(position_data, 'industry_positions')
+print_section(position_data, 'industry_positions', n_max = 1)
 ```
 
 <br>
@@ -143,6 +134,21 @@ print_section(position_data, 'industry_positions')
 
 Teaching Experience {data-icon=chalkboard-teacher}
 --------------------------------------------------------------------------------
+
+
+```{r}
+print_section(position_data, 'teaching_positions', n_max = 3)
+```
+
+
+Patents {data-icon=atlas}
+--------------------------------------------------------------------------------
+
+
+```{r, warning=FALSE}
+bibdf <- bib2df::bib2df("citations.bib")
+print_articles(bibdf, type = "PATENT", cv_author = "Ginolhac, A")
+```
 
 ::: aside
 
@@ -180,7 +186,8 @@ tribble(~ year,  ~ citations,
   theme(axis.line.y = element_blank(),
         axis.ticks.y = element_blank(),
         plot.background = element_blank(),
-        panel.grid.major.x = element_line(linetype = "dashed", colour = "grey60")) +
+        panel.ontop = TRUE,
+        panel.grid.major.x = element_line(linetype = "dashed", colour = "grey80")) +
   ggimage::theme_transparent() +
   labs(x = NULL,
        y = "citations",
@@ -192,28 +199,15 @@ ggsave(citation_plot, filename = "citation.png", width = 2, height = 4, bg = "tr
 
 :::
 
-```{r}
-print_section(position_data, 'teaching_positions')
-```
-
-
 
 Publications {data-icon=book}
 --------------------------------------------------------------------------------
 
-
 ```{r, warning=FALSE}
-bibdf <- bib2df::bib2df("citations.bib")
-print_articles(bibdf, type = "ARTICLE", cv_author = "Ginolhac, A")
+
+print_articles(bibdf[1:6, ], type = "ARTICLE", cv_author = "Ginolhac, A")
 ```
 
-Patents {data-icon=atlas}
---------------------------------------------------------------------------------
-
-
-```{r}
-print_articles(bibdf, type = "PATENT", cv_author = "Ginolhac, A")
-```
 
 
 
